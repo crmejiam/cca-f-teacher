@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Skills & Slash Commands — Best Practices | Claude Certification Sessions</title>
+<style>
+/* PERFICIENT-CSS-START */
+/*
+ * Perficient AI Academy — Slide Deck CSS
+ * Source of truth for all session presentations.
+ * Brand: Perficient 2026 Brand Standards
+ *
+ * To update all sessions: node build-slides.js
+ *
+ * COLOR SYSTEM (exact brand values)
+ *   #1B2227  Dark Primary   — body text, content titles
+ *   #FFFFFF  White          — backgrounds, text on dark
+ *   #075056  Dark Teal      — cover bg, logo on light, eyebrows
+ *   #71D8C5  Mint Teal      — highlights, bullet accents (decorative only)
+ *   #4AB3E9  Sky Blue       — info callouts, links
+ *   #324EB5  Royal Blue     — tertiary accent
+ *   #024879  Navy           — CTAs, note boxes
+ *   #DFE7ED  Gray           — borders, dividers
+ *   #F0F4F8  Light Gray     — card fills
+ *   #FE3A39  Alert Red      — warnings/errors only
+ */
+
+/* ── FONTS ────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lato:wght@400;700;900&display=swap');
+
+/* ── ROOT VARIABLES ───────────────────────────────────────────────────────── */
+:root {
+  --darkteal:  #075056;
+  --dark:      #1B2227;
+  --navy:      #024879;
+  --teal:      #71D8C5;
+  --sky:       #4AB3E9;
+  --royal:     #324EB5;
+  --white:     #FFFFFF;
+  --gray:      #DFE7ED;
+  --gray2:     #F0F4F8;
+  --alert:     #FE3A39;
+
+  /* Divider gradient — light blue wash */
+  --div-grad: linear-gradient(135deg, #EEF7FF 0%, #DEF0FF 55%, #B8D9F0 100%);
+
+  --font-head: 'Franklin Gothic Demi Cond', 'Franklin Gothic Medium Cond', 'Arial Black', Arial, sans-serif;
+  --font-body: Aptos, Inter, Lato, Calibri, 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace;
+
+  --slide-w: 1280px;
+  --slide-h: 720px;
+}
+
+/* ── RESET ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #060a0e;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+/* ── DECK ─────────────────────────────────────────────────────────────────── */
+#deck {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+#viewport {
+  position: relative;
+  width: var(--slide-w);
+  height: var(--slide-h);
+  overflow: hidden;
+  transform-origin: center center;
+  border-radius: 2px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+/* ── SLIDE BASE ───────────────────────────────────────────────────────────── */
+.slide {
+  position: absolute; inset: 0;
+  width: var(--slide-w); height: var(--slide-h);
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  transform: translateX(48px);
+  background: var(--white);
+  overflow: hidden;
+}
+.slide.active  { opacity: 1; pointer-events: all; transform: translateX(0); }
+.slide.prev    { opacity: 0; transform: translateX(-48px); }
+
+/* Divider/thankyou: zoom in */
+.slide.divider,
+.slide.thankyou { transform: scale(0.96) translateY(12px); }
+.slide.divider.active,
+.slide.thankyou.active  { transform: scale(1) translateY(0); }
+.slide.divider.prev,
+.slide.thankyou.prev    { opacity: 0; transform: scale(1.04) translateY(-8px); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOGO — Bottom-left on ALL slides (matches PPT template)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.logo {
+  position: absolute;
+  z-index: 10;
+  bottom: 26px;
+  left: 48px;
+}
+.logo svg {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+/* Default: dark teal on white/light slides */
+.logo svg { color: var(--darkteal); }
+
+/* White logo on dark/teal slides */
+.slide.cover       .logo svg,
+.slide.nextsession .logo svg,
+.slide.section-overview .logo svg { color: rgba(255,255,255,0.65); }
+
+/* Divider & Thank You: hide logo (PPT template omits it on these slides) */
+.slide.divider  .logo,
+.slide.thankyou .logo { display: none; }
+.callout-full .logo { bottom: 22px; left: 44px; }
+.callout-full .logo svg { color: rgba(255,255,255,0.5); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COVER SLIDE
+   Background: #075056 dark teal
+   Right: Isometric 3D box decorative SVG
+   Logo: bottom-left, white
+   Title: very large, white, Franklin Gothic
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slide.cover {
+  background: var(--darkteal);
+  padding: 0;
+  flex-direction: row;
+}
+
+/* Left content area */
+.cover-content {
+  position: relative; z-index: 2;
+  width: 58%;
+  padding: 68px 72px;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Session pill */
+.cover-content .pill {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.9);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  padding: 5px 16px; border-radius: 100px;
+  margin-bottom: 36px;
+  width: fit-content;
+}
+
+.cover h1 {
+  font-family: var(--font-head);
+  font-size: 96px; font-weight: 900;
+  color: var(--white);
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin-bottom: 24px;
+}
+
+.cover .subtitle {
+  font-size: 16px; font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  max-width: 460px; line-height: 1.65;
+  margin-bottom: 48px;
+}
+
+.cover-meta {
+  display: flex; gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 24px; width: fit-content;
+}
+
+.cover-meta-item {
+  display: flex; flex-direction: column; gap: 4px;
+  padding-right: 32px; margin-right: 32px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.cover-meta-item:last-child { border-right: none; margin-right: 0; }
+
+.cover-meta-item .m-label {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 2.5px; text-transform: uppercase;
+}
+.cover-meta-item .m-value {
+  font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Right: Isometric 3D box decoration */
+.cover-graphic {
+  position: absolute;
+  right: 0; top: 0;
+  width: 44%; height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Brand header above title — shows the Perficient logo+wordmark (matches PPT) */
+.cover-brand {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 16px;
+}
+.cover-brand svg {
+  height: 36px;
+  width: auto;
+  color: var(--white);
+}
+
+/* Legacy cover-bg and cover-dots (kept for backward compat, hidden) */
+.cover-bg, .cover-dots { display: none; }
+.cover-rule { display: none; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SLIDE HEADER — content slides
+   Eyebrow: small ALL CAPS dark teal
+   Title: large ALL CAPS dark, no colored rule
+   ═══════════════════════════════════════════════════════════════════════════ */
+.s-header {
+  padding: 40px 64px 0;
+  flex-shrink: 0;
+}
+
+.s-header .eyebrow {
+  font-family: var(--font-body);
+  font-size: 11.5px; font-weight: 700;
+  color: var(--dark);
+  letter-spacing: 2.5px; text-transform: uppercase;
+  margin-bottom: 8px;
+  display: none;
+}
+.s-header .eyebrow.visible { display: block; }
+
+.s-header h2 {
+  font-family: var(--font-head);
+  font-size: 56px; font-weight: 900;
+  color: var(--dark);
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+/* Rule — hidden by default (PPT has no visible rule) */
+.s-rule {
+  height: 0;
+  margin: 8px 64px 0;
+  flex-shrink: 0;
+}
+
+.s-body {
+  flex: 1;
+  padding: 20px 64px 52px;
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AGENDA — White bg with ghost watermark, table-style list
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slide.agenda-slide {
+  position: relative;
+}
+
+/* Ghost "AGENDA" watermark */
+.slide.agenda-slide::before {
+  content: 'AGENDA';
+  position: absolute;
+  font-family: var(--font-head);
+  font-size: 220px; font-weight: 900;
+  color: rgba(7,80,86,0.04);
+  text-transform: uppercase;
+  letter-spacing: -8px;
+  bottom: -20px; right: 40px;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  z-index: 0;
+}
+
+/* 3-card agenda grid */
+.agenda-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px; height: 100%;
+  position: relative; z-index: 1;
+}
+
+.agenda-card {
+  background: var(--white);
+  border-radius: 6px;
+  padding: 24px 24px;
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--gray);
+  border-top: 4px solid var(--darkteal);
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(27,34,39,0.05);
+}
+
+.agenda-card .part-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--darkteal); letter-spacing: 2.5px; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.agenda-card h3 {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 700;
+  color: var(--dark); line-height: 1.15;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.agenda-card .part-time {
+  font-size: 12px; color: #6B7280; font-weight: 500;
+  margin-bottom: 18px;
+}
+
+.agenda-card ul {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+  flex: 1;
+}
+
+.agenda-card ul li {
+  font-size: 17px; color: #374151; line-height: 1.45;
+  padding-left: 16px; position: relative;
+}
+.agenda-card ul li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 5px; height: 5px;
+  background: var(--darkteal);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1-COL BULLETS — Square markers
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bullets { display: flex; flex-direction: column; gap: 12px; }
+
+.bullet-item {
+  display: flex; align-items: flex-start; gap: 18px;
+  font-size: 24px; color: var(--dark); line-height: 1.5;
+}
+
+.bullet-dot {
+  flex-shrink: 0;
+  width: 8px; height: 8px;
+  background: var(--darkteal);
+  margin-top: 10px;
+  /* Square, not round */
+}
+
+.bullet-item strong { color: var(--dark); font-weight: 700; }
+.bullet-item code,
+.col-block ul li code,
+.col-block p code,
+.note-box code,
+.alert-box code {
+  font-family: var(--font-mono);
+  font-size: 0.84em; background: var(--gray2);
+  color: var(--navy); padding: 2px 7px;
+  border-radius: 3px; font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2-COL LAYOUT
+   ═══════════════════════════════════════════════════════════════════════════ */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; height: 100%;
+}
+
+.col-block {
+  border-radius: 6px; padding: 24px 28px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.col-block.left {
+  background: var(--gray2);
+  border: 1px solid var(--gray);
+}
+.col-block.right {
+  background: rgba(7,80,86,0.04);
+  border: 1px solid rgba(7,80,86,0.15);
+}
+
+.col-block h3 {
+  font-family: var(--font-head);
+  font-size: 20px; font-weight: 700;
+  text-transform: uppercase;
+  padding-bottom: 12px;
+  border-bottom: 2px solid;
+  line-height: 1.2;
+}
+.col-block.left  h3 { color: var(--dark);    border-color: var(--gray); }
+.col-block.right h3 { color: var(--darkteal); border-color: rgba(7,80,86,0.2); }
+
+.col-block ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.col-block ul li {
+  display: block;
+  position: relative;
+  padding-left: 18px;
+  font-size: 18px; color: var(--dark); line-height: 1.5;
+}
+.col-block ul li::before {
+  content: ''; position: absolute;
+  left: 0; top: 9px;
+  width: 6px; height: 6px;
+  flex-shrink: 0;
+}
+.col-block.left  ul li::before { background: #9CA3AF; }
+.col-block.right ul li::before { background: var(--darkteal); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3-COL LAYOUT
+   ═══════════════════════════════════════════════════════════════════════════ */
+.three-col {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px; height: 100%;
+}
+
+.col-block.accent {
+  background: rgba(7,80,86,0.05);
+  border: 1px solid rgba(7,80,86,0.15);
+}
+.col-block.accent h3 { color: var(--darkteal); border-color: rgba(7,80,86,0.2); }
+.col-block.accent ul li::before { background: var(--sky); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATS / KPI
+   ═══════════════════════════════════════════════════════════════════════════ */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 24px; width: 100%; align-items: stretch;
+}
+.stats-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.stats-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.stats-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+.stat-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; gap: 6px;
+  padding: 28px 16px;
+  border-radius: 6px;
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  position: relative; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(27,34,39,0.05);
+}
+.stat-item::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; background: var(--darkteal);
+  border-radius: 6px 6px 0 0;
+}
+.stat-item.teal::before       { background: var(--teal); }
+.stat-item.lightblue::before  { background: var(--sky); }
+.stat-item.deepblue::before   { background: var(--royal); }
+
+.stat-number {
+  font-family: var(--font-head);
+  font-size: 64px; font-weight: 800;
+  color: var(--darkteal); line-height: 1;
+  letter-spacing: -2px;
+}
+.stat-label {
+  font-size: 12px; font-weight: 700;
+  color: var(--dark); text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.stat-sub {
+  font-size: 12px; color: #6B7280; font-weight: 400;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ICON GRID
+   ═══════════════════════════════════════════════════════════════════════════ */
+.icon-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 20px; width: 100%;
+}
+.icon-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.icon-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.icon-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+.icon-item {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  padding: 22px; border-radius: 6px;
+  background: var(--gray2);
+  border: 1px solid var(--gray);
+}
+.icon-item .icon-emoji { font-size: 32px; line-height: 1; }
+.icon-item h4 {
+  font-family: var(--font-head);
+  font-size: 17px; font-weight: 700;
+  text-transform: uppercase;
+  color: var(--dark); line-height: 1.2;
+}
+.icon-item p { font-size: 16px; color: #4B5563; line-height: 1.5; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION OVERVIEW SLIDE
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slide.section-overview {
+  background: var(--darkteal);
+  padding: 0;
+  flex-direction: row;
+}
+
+.so-left {
+  width: 35%;
+  background: rgba(0,0,0,0.18);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 56px 44px;
+  position: relative;
+  flex-shrink: 0;
+}
+.so-left::after {
+  content: '';
+  position: absolute; right: 0; top: 10%; bottom: 10%;
+  width: 1px; background: rgba(255,255,255,0.1);
+}
+
+.so-section-num {
+  font-family: var(--font-head);
+  font-size: 96px; font-weight: 900;
+  color: rgba(255,255,255,0.07);
+  line-height: 1; letter-spacing: -4px;
+  margin-bottom: -12px;
+  position: relative; left: -3px;
+}
+
+.so-pill {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.85);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 100px;
+  margin-bottom: 16px; width: fit-content;
+}
+
+.so-left h2 {
+  font-family: var(--font-head);
+  font-size: 40px; font-weight: 900;
+  color: var(--white); line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.so-left p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+.so-center, .so-right {
+  flex: 1;
+  padding: 52px 36px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.so-center { border-right: 1px solid rgba(255,255,255,0.1); }
+
+.so-panel-label {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 2.5px; text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.so-center ul, .so-right ul {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 12px;
+  flex: 1;
+}
+.so-center ul li, .so-right ul li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 17px; color: rgba(255,255,255,0.72); line-height: 1.5;
+}
+.so-center ul li::before {
+  content: ''; flex-shrink: 0;
+  width: 6px; height: 6px;
+  background: var(--sky); margin-top: 6px;
+}
+.so-right ul li::before {
+  content: ''; flex-shrink: 0;
+  width: 6px; height: 6px;
+  background: var(--teal); margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CODE / DEMO BLOCK
+   ═══════════════════════════════════════════════════════════════════════════ */
+.demo-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--darkteal); color: var(--white);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 12px; align-self: flex-start;
+}
+
+.code-block {
+  background: #0d1117; border-radius: 8px;
+  padding: 26px 30px; flex: 1; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+.code-block::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--darkteal);
+  border-radius: 2px 0 0 2px;
+}
+.code-block pre {
+  font-family: var(--font-mono);
+  font-size: 14px; line-height: 1.75;
+  color: #e6edf3; white-space: pre; overflow: hidden;
+}
+.code-block pre .c  { color: #8b949e; }
+.code-block pre .k  { color: #79c0ff; }
+.code-block pre .s  { color: #a5d6ff; }
+.code-block pre .fn { color: #d2a8ff; }
+.code-block pre .n  { color: #79c0ff; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CALLOUT / QUOTE — full-bleed dark teal
+   ═══════════════════════════════════════════════════════════════════════════ */
+.callout-full {
+  position: absolute; inset: 0;
+  background: var(--darkteal);
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  padding: 72px 88px;
+  z-index: 1;
+}
+.callout-full::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 40%; height: 100%;
+  background: rgba(0,0,0,0.1);
+  pointer-events: none;
+}
+/* Diamond line art overlay on callout */
+.callout-full::after {
+  content: '';
+  position: absolute; right: -10%; top: -40%; bottom: -40%;
+  width: 55%;
+  background-image:
+    repeating-linear-gradient(
+      -30deg,
+      transparent 0px, transparent 108px,
+      rgba(255,255,255,0.06) 108px, rgba(255,255,255,0.06) 110px
+    ),
+    repeating-linear-gradient(
+      30deg,
+      transparent 0px, transparent 108px,
+      rgba(255,255,255,0.06) 108px, rgba(255,255,255,0.06) 110px
+    );
+  pointer-events: none;
+}
+
+.callout-full .c-eyebrow {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.55); letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 10px;
+  position: relative; z-index: 2;
+}
+.callout-full .c-eyebrow::before {
+  content: '';
+  width: 32px; height: 2px; background: rgba(255,255,255,0.4);
+}
+.callout-full blockquote {
+  font-family: var(--font-head);
+  font-size: 52px; font-weight: 900;
+  color: var(--white); line-height: 1.12;
+  max-width: 820px; margin-bottom: 28px;
+  font-style: normal; position: relative; z-index: 2;
+  text-transform: uppercase;
+}
+.callout-full .c-attr {
+  font-size: 14px; color: rgba(255,255,255,0.4);
+  position: relative; z-index: 2;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DIVIDER SLIDE
+   Background: light blue gradient (matches PPT "Divider 2 - Line Art")
+   Left: dark title, eyebrow
+   Right: white diamond/isometric line art SVG
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slide.divider {
+  background: var(--div-grad);
+  padding: 0;
+}
+
+/* Left content */
+.divider-inner {
+  position: relative; z-index: 2;
+  padding: 0 80px;
+  display: flex; flex-direction: column;
+  justify-content: center; height: 100%;
+  width: 56%;
+}
+
+.divider-eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px; font-weight: 700;
+  color: var(--dark); letter-spacing: 2.5px; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* Legacy divider-line kept for backward compat */
+.divider-line { display: none; }
+
+.slide.divider h2 {
+  font-family: var(--font-head);
+  font-size: 80px; font-weight: 900;
+  color: var(--dark);
+  line-height: 0.93;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.slide.divider .div-sub {
+  font-size: 16px; color: rgba(27,34,39,0.55);
+  max-width: 420px; line-height: 1.65;
+}
+
+/* Right: white isometric line art — wide-spaced diagonal grid (matches PPT) */
+.divider-grid {
+  position: absolute;
+  left: 30%; top: 0;
+  width: 75%; height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Primary lines: ~-30 degrees (top-right to bottom-left) */
+.divider-grid::before {
+  content: '';
+  position: absolute;
+  top: -40%; left: -20%; right: -20%; bottom: -40%;
+  background-image:
+    repeating-linear-gradient(
+      -30deg,
+      transparent 0px,
+      transparent 108px,
+      rgba(255,255,255,0.85) 108px,
+      rgba(255,255,255,0.85) 110px
+    );
+}
+
+/* Secondary lines: ~+30 degrees (top-left to bottom-right) — diamond crosshatch */
+.divider-grid::after {
+  content: '';
+  position: absolute;
+  top: -40%; left: -20%; right: -20%; bottom: -40%;
+  background-image:
+    repeating-linear-gradient(
+      30deg,
+      transparent 0px,
+      transparent 108px,
+      rgba(255,255,255,0.85) 108px,
+      rgba(255,255,255,0.85) 110px
+    );
+}
+
+/* Background large number — subtle */
+.divider-bg-num {
+  position: absolute; left: 80px; bottom: 28px;
+  font-family: var(--font-head);
+  font-size: 140px; font-weight: 900;
+  color: rgba(7,80,86,0.08);
+  line-height: 1; letter-spacing: -4px;
+  pointer-events: none; user-select: none;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WHAT'S NEXT / TEASER
+   Uses dark teal background to match cover
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slide.nextsession {
+  background: var(--darkteal);
+  padding: 0;
+  overflow: hidden;
+}
+
+.ns-bg {
+  position: absolute; inset: 0; overflow: hidden;
+}
+.ns-bg::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 50%; height: 100%;
+  background: rgba(0,0,0,0.18);
+}
+.ns-bg::after {
+  content: '';
+  position: absolute; right: -10%; top: -40%; bottom: -40%;
+  width: 55%;
+  background-image:
+    repeating-linear-gradient(
+      -30deg,
+      transparent 0px, transparent 108px,
+      rgba(255,255,255,0.05) 108px, rgba(255,255,255,0.05) 110px
+    ),
+    repeating-linear-gradient(
+      30deg,
+      transparent 0px, transparent 108px,
+      rgba(255,255,255,0.05) 108px, rgba(255,255,255,0.05) 110px
+    );
+}
+
+.ns-left {
+  position: absolute; left: 0; top: 0;
+  width: 50%; height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 64px 48px 64px 72px;
+  z-index: 2;
+}
+
+.ns-eyebrow {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.ns-eyebrow::before {
+  content: '';
+  width: 24px; height: 2px;
+  background: rgba(255,255,255,0.5);
+}
+.ns-eyebrow span {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.6); letter-spacing: 3px; text-transform: uppercase;
+}
+
+.ns-session-num {
+  font-family: var(--font-head);
+  font-size: 96px; font-weight: 900;
+  color: rgba(255,255,255,0.06);
+  line-height: 1; letter-spacing: -4px;
+  margin-bottom: -16px;
+  position: relative; left: -4px;
+}
+
+.ns-title {
+  font-family: var(--font-head);
+  font-size: 48px; font-weight: 900;
+  color: var(--white);
+  line-height: 1.0; margin-bottom: 28px;
+  text-transform: uppercase;
+}
+
+.ns-hooks { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.ns-hooks li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 18px; color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+}
+.ns-hooks li::before {
+  content: '→';
+  color: rgba(255,255,255,0.5); font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+.ns-right {
+  position: absolute; right: 0; top: 0;
+  width: 50%; height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 64px 72px 64px 48px;
+  z-index: 2;
+}
+
+.ns-cliffhanger {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-left: 3px solid rgba(255,255,255,0.4);
+  border-radius: 6px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.ns-cliffhanger .ch-label {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.5); letter-spacing: 2.5px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.ns-cliffhanger p {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 600;
+  color: var(--white); line-height: 1.38;
+  font-style: italic;
+}
+
+.ns-preview-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 100px;
+  margin-top: 8px; align-self: flex-start;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THANK YOU / CLOSING SLIDE
+   Background: same light blue gradient as divider
+   ═══════════════════════════════════════════════════════════════════════════ */
+.slide.thankyou {
+  background: var(--div-grad);
+  padding: 0;
+}
+
+.ty-bg {
+  position: absolute; inset: 0; overflow: hidden;
+  pointer-events: none;
+}
+/* Isometric line art — same as divider, centered-to-right */
+.ty-bg::before {
+  content: '';
+  position: absolute;
+  left: 25%; top: -40%; right: -20%; bottom: -40%;
+  background-image:
+    repeating-linear-gradient(
+      -30deg,
+      transparent 0px, transparent 108px,
+      rgba(255,255,255,0.85) 108px, rgba(255,255,255,0.85) 110px
+    ),
+    repeating-linear-gradient(
+      30deg,
+      transparent 0px, transparent 108px,
+      rgba(255,255,255,0.85) 108px, rgba(255,255,255,0.85) 110px
+    );
+}
+.ty-bg::after { display: none; }
+
+.ty-content {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  height: 100%; padding: 72px 80px;
+  text-align: left; gap: 0;
+  width: 58%;
+}
+
+.ty-icon {
+  width: 56px; height: 56px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 28px;
+  background: rgba(7,80,86,0.1);
+}
+
+.ty-content h2 {
+  font-family: var(--font-head);
+  font-size: 80px; font-weight: 900;
+  color: var(--dark); line-height: 0.93;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+.ty-content .ty-sub {
+  font-size: 16px; color: rgba(27,34,39,0.55);
+  max-width: 380px; line-height: 1.7; margin-bottom: 48px;
+}
+
+.ty-meta {
+  display: flex; gap: 0;
+  border-top: 1px solid rgba(27,34,39,0.12);
+  padding-top: 24px;
+}
+
+.ty-meta-item {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 0 28px;
+  border-right: 1px solid rgba(27,34,39,0.12);
+}
+.ty-meta-item:first-child { padding-left: 0; }
+.ty-meta-item:last-child { border-right: none; }
+
+.ty-meta-item .t-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--darkteal); letter-spacing: 2.5px; text-transform: uppercase;
+}
+.ty-meta-item .t-value {
+  font-size: 13.5px; color: var(--dark); font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABLE — for structured data slides
+   Header: darkteal bg, white ALL CAPS text
+   Cells: white bg, small square bullet
+   ═══════════════════════════════════════════════════════════════════════════ */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 18px;
+}
+.data-table th {
+  background: var(--darkteal);
+  color: var(--white);
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  padding: 12px 16px;
+  text-align: left;
+  border: none;
+}
+.data-table td {
+  background: var(--white);
+  color: var(--dark);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--gray);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:nth-child(even) td { background: var(--gray2); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALERT / WARNING BOXES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.alert-box {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 20px; border-radius: 6px;
+  border-left: 4px solid var(--alert);
+  background: rgba(254,58,57,0.05);
+  margin-top: 16px;
+}
+.alert-box.info    { border-left-color: var(--sky);    background: rgba(74,179,233,0.06); }
+.alert-box.success { border-left-color: var(--darkteal); background: rgba(7,80,86,0.05); }
+.alert-box p { font-size: 18px; color: var(--dark); line-height: 1.55; }
+
+/* NOTE box */
+.note-box {
+  background: rgba(7,80,86,0.04);
+  border: 1px solid rgba(7,80,86,0.12);
+  border-left: 3px solid var(--darkteal);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.note-box p { font-size: 18px; color: var(--dark); line-height: 1.55; }
+.note-box strong { color: var(--darkteal); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROADMAP GRID — 8-session journey / pathway overview
+   4×2 card grid with active session highlight
+   ═══════════════════════════════════════════════════════════════════════════ */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  height: 100%;
+  align-content: center;
+}
+
+.roadmap-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  border-radius: 6px;
+  padding: 16px 18px;
+  display: flex; flex-direction: column;
+  gap: 4px;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.roadmap-card:hover {
+  border-color: rgba(7,80,86,0.3);
+  box-shadow: 0 2px 10px rgba(27,34,39,0.08);
+}
+
+/* Active session highlight */
+.roadmap-card.active-session {
+  border-color: var(--darkteal);
+  border-width: 2px;
+  background: rgba(7,80,86,0.04);
+  box-shadow: 0 2px 12px rgba(7,80,86,0.12);
+}
+
+.roadmap-card .s-num {
+  font-size: 10px; font-weight: 700;
+  color: var(--darkteal);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+
+.roadmap-card h4 {
+  font-family: var(--font-head);
+  font-size: 16px; font-weight: 700;
+  color: var(--dark);
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.roadmap-card .s-section {
+  font-size: 12px; color: #6B7280;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.roadmap-card .s-badge {
+  display: inline-block;
+  background: var(--darkteal);
+  color: var(--white);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+  margin-top: 6px; width: fit-content;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOOL CARDS GRID — tool ecosystem / technology overview
+   2×3 or 3×2 card layout with icon, description, and session tags
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  height: 100%;
+  align-content: center;
+}
+
+.tool-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  border-radius: 6px;
+  padding: 20px;
+  display: flex; flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tool-card:hover {
+  border-color: rgba(7,80,86,0.25);
+  box-shadow: 0 2px 10px rgba(27,34,39,0.08);
+}
+
+.tool-card .t-icon {
+  font-size: 28px; line-height: 1;
+  margin-bottom: 4px;
+}
+
+.tool-card h4 {
+  font-family: var(--font-head);
+  font-size: 17px; font-weight: 700;
+  color: var(--dark);
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.tool-card p {
+  font-size: 16px; color: #4B5563;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.tool-card .t-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 600;
+  color: var(--darkteal);
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(7,80,86,0.06);
+  width: fit-content;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPLETION BANNER — session-08 capstone / milestone
+   ═══════════════════════════════════════════════════════════════════════════ */
+.completion-banner {
+  background: rgba(7,80,86,0.06);
+  border: 1.5px solid rgba(7,80,86,0.15);
+  border-radius: 8px;
+  padding: 20px 28px;
+  text-align: center;
+  margin-top: 20px;
+}
+.completion-banner .cb-label {
+  font-family: var(--font-head);
+  font-size: 16px; font-weight: 700;
+  color: var(--darkteal);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.completion-banner .cb-text {
+  font-size: 13px; color: #6B7280;
+  line-height: 1.5;
+}
+
+/* Checkmark for completed roadmap items */
+.roadmap-card.done {
+  opacity: 0.6;
+}
+.roadmap-card.done::after {
+  content: '✓';
+  position: absolute; top: 8px; right: 10px;
+  font-size: 14px; font-weight: 700;
+  color: var(--darkteal);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROGRESS BAR & UI CHROME
+   ═══════════════════════════════════════════════════════════════════════════ */
+#progress {
+  position: fixed; bottom: 0; left: 0;
+  height: 2px; background: var(--darkteal);
+  transition: width 0.35s ease; z-index: 100;
+}
+
+#counter {
+  position: fixed; bottom: 10px; right: 24px;
+  font-size: 11px; color: rgba(255,255,255,0.22);
+  letter-spacing: 1px; z-index: 100; pointer-events: none;
+  font-family: var(--font-body);
+}
+
+#dots {
+  position: fixed; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 7px;
+  z-index: 100;
+}
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.2); cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.dot.active { background: var(--darkteal); transform: scale(1.5); }
+
+#hint {
+  position: fixed; bottom: 10px; right: 14px;
+  font-size: 10px; color: rgba(255,255,255,0.16);
+  z-index: 100; pointer-events: none;
+  font-family: var(--font-body);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRINT / PDF EXPORT
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media print {
+  html, body { background: white; overflow: visible; }
+  #deck { position: static; }
+  #viewport { transform: none !important; box-shadow: none; }
+  .slide {
+    position: relative; opacity: 1; transform: none;
+    pointer-events: all; page-break-after: always;
+    width: 100%; height: 560px;
+  }
+  #progress, #counter, #dots, #hint { display: none; }
+}
+
+/* ── QUIZ SLIDE ──────────────────────────────────────────────────────────── */
+.quiz-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: 100%;
+}
+.quiz-col {
+  background: var(--white); border: 1px solid var(--gray);
+  border-top: 4px solid var(--darkteal);
+  border-radius: 6px; padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 2px 8px rgba(27,34,39,0.05);
+}
+.quiz-col .q-num {
+  font-size: 10px; font-weight: 700; color: var(--darkteal);
+  letter-spacing: 2.5px; text-transform: uppercase;
+}
+.quiz-col .q-text {
+  font-family: var(--font-head);
+  font-size: 19px; font-weight: 700; color: var(--dark);
+  line-height: 1.25; text-transform: none;
+}
+.quiz-col ol {
+  list-style: none; counter-reset: opt;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.quiz-col ol li {
+  counter-increment: opt;
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 15px; color: var(--dark); line-height: 1.45;
+  padding: 8px 12px;
+  background: var(--gray2); border-radius: 4px;
+  border-left: 3px solid transparent;
+}
+.quiz-col ol li::before {
+  content: counter(opt, upper-alpha);
+  flex-shrink: 0; width: 22px; height: 22px;
+  background: var(--darkteal); color: var(--white);
+  border-radius: 3px;
+  font-family: var(--font-head); font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.quiz-col ol li code {
+  font-family: var(--font-mono); font-size: 0.86em;
+  background: var(--white); color: var(--navy);
+  padding: 1px 5px; border-radius: 3px;
+}
+
+/* ── SOLO QUIZ (one question per slide, large) ───────────────────────── */
+.quiz-solo {
+  max-width: 880px; margin: 0 auto;
+  background: var(--white); border: 1px solid var(--gray);
+  border-top: 6px solid var(--darkteal);
+  border-radius: 8px;
+  padding: 26px 44px 28px;
+  display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 4px 14px rgba(27,34,39,0.06);
+}
+.quiz-solo .q-num {
+  font-size: 11px; font-weight: 700; color: var(--darkteal);
+  letter-spacing: 2.8px; text-transform: uppercase;
+}
+.quiz-solo .q-text {
+  font-family: var(--font-head);
+  font-size: 26px; font-weight: 700; color: var(--dark);
+  line-height: 1.22; text-transform: none;
+}
+.quiz-solo ol {
+  list-style: none; counter-reset: opt;
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 4px;
+}
+.quiz-solo ol li {
+  counter-increment: opt;
+  display: flex; align-items: flex-start; gap: 14px;
+  font-size: 17px; color: var(--dark); line-height: 1.35;
+  padding: 10px 16px;
+  background: var(--gray2); border-radius: 6px;
+}
+.quiz-solo ol li::before {
+  content: counter(opt, upper-alpha);
+  flex-shrink: 0; width: 30px; height: 30px;
+  background: var(--darkteal); color: var(--white);
+  border-radius: 4px;
+  font-family: var(--font-head); font-size: 15px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.quiz-solo ol li code {
+  font-family: var(--font-mono); font-size: 0.9em;
+  background: var(--white); color: var(--navy);
+  padding: 2px 7px; border-radius: 3px;
+}
+.quiz-solo .q-hint {
+  font-size: 14px; color: #6B7280;
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 4px;
+}
+.quiz-solo .q-hint::before {
+  content: '💬'; font-size: 18px;
+}
+
+/* PERFICIENT-CSS-END */
+</style>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="perficient-logo" viewBox="0 0 1000 300">
+    <g fill="currentColor">
+      <path d="M88.3,70.5l-28.84,18.13,66.41,40.02c3.69,2.22,5.94,6.21,5.94,10.52v80.26l31.16-20.82v-76.94c0-4.34-2.29-8.36-6.03-10.57l-68.63-40.59Z"/>
+      <path d="M107.19,142.44l-25.6-15.2v62.05l10.17,6.07.16-27.42,16.99,10.45c1.01.62,2.31-.11,2.31-1.29v-27.59c0-2.9-1.53-5.59-4.02-7.07Z"/>
+    </g>
+    <g fill="currentColor">
+      <path d="M212,198.33v-82.93h42.77c6.87,0,12.81,1.14,17.83,3.43,5.01,2.29,8.87,5.55,11.55,9.77,2.68,4.23,4.03,9.26,4.03,15.11s-1.34,10.9-4.03,15.17c-2.68,4.26-6.54,7.56-11.55,9.89-5.02,2.33-10.96,3.49-17.83,3.49h-21.92v26.06h-20.85ZM232.85,155.09h21.09c2.68,0,4.99-.45,6.93-1.36,1.93-.91,3.43-2.19,4.5-3.85s1.6-3.67,1.6-6.04-.51-4.4-1.54-6.1c-1.03-1.7-2.51-3-4.44-3.91-1.93-.91-4.25-1.36-6.93-1.36h-21.21v22.63Z"/>
+      <path d="M297.31,198.33v-82.93h66.7v17.77h-45.85v15.17h37.32v16.71h-37.32v15.52h47.51v17.77h-68.36Z"/>
+      <path d="M375.07,198.33v-82.93h43.36c6.87,0,12.8,1.14,17.77,3.43,4.98,2.29,8.83,5.55,11.55,9.77,2.72,4.23,4.09,9.3,4.09,15.23s-1.4,10.68-4.21,14.75c-2.8,4.07-6.97,7.21-12.5,9.42l19.19,30.33h-24.29l-16.11-26.06h-18.01v26.06h-20.85ZM395.93,155.09h21.56c4.18,0,7.42-1.01,9.71-3.02,2.29-2.01,3.44-4.76,3.44-8.23s-1.15-6.44-3.44-8.41c-2.29-1.97-5.49-2.96-9.6-2.96h-21.68v22.63Z"/>
+      <path d="M462.21,198.33v-82.93h65.4v17.77h-44.55v15.99h37.55v16.59h-37.55v32.58h-20.85Z"/>
+      <path d="M536.89,198.33v-82.93h20.85v82.93h-20.85Z"/>
+      <path d="M613.7,199.04c-9.48,0-17.71-1.76-24.7-5.27-6.99-3.51-12.4-8.43-16.23-14.75-3.83-6.32-5.75-13.7-5.75-22.15s1.97-15.72,5.92-22.03c3.95-6.32,9.54-11.26,16.76-14.81,7.23-3.55,15.62-5.33,25.17-5.33,7.9,0,14.95,1.3,21.15,3.91,6.2,2.61,11.27,6.26,15.22,10.96,3.95,4.7,6.28,10.17,6.99,16.41h-20.97c-1.11-4.34-3.65-7.76-7.64-10.25-3.99-2.49-8.99-3.73-14.99-3.73-5.29,0-9.91,1.01-13.86,3.02-3.95,2.01-7.01,4.9-9.18,8.65-2.17,3.75-3.26,8.16-3.26,13.21s1.07,9.56,3.2,13.27c2.13,3.71,5.13,6.57,9,8.59s8.49,3.02,13.86,3.02c6.08,0,11.14-1.24,15.16-3.73,4.03-2.49,6.59-5.9,7.7-10.25h20.97c-.71,6.24-3.1,11.71-7.17,16.41-4.07,4.7-9.3,8.35-15.7,10.96-6.4,2.61-13.63,3.91-21.68,3.91Z"/>
+      <path d="M665.86,198.33v-82.93h20.85v82.93h-20.85Z"/>
+      <path d="M698.3,198.33v-82.93h66.7v17.77h-45.85v15.17h37.32v16.71h-37.32v15.52h47.51v17.77h-68.36Z"/>
+      <path d="M774.87,198.33v-82.93h18.95l43.01,49.88v-49.88h20.38v82.93h-18.95l-43.01-49.88v49.88h-20.38Z"/>
+      <path d="M893.25,198.33v-65.16h-28.91v-17.77h78.67v17.77h-28.91v65.16h-20.85Z"/>
+    </g>
+  </symbol>
+</svg>
+</head>
+<body>
+<div id="deck">
+<div id="viewport">
+
+<!-- SLIDE 1: COVER -->
+<div class="slide cover active">
+  <div class="cover-content">
+    <div class="cover-brand"><svg><use href="#perficient-logo"/></svg></div>
+    <span class="pill">DOMAIN 3</span>
+    <h1>SKILLS<br>&amp; SLASH<br>COMMANDS</h1>
+    <p class="subtitle">How to build, organize, and govern reusable Claude Code behaviors — and how to keep the context window under control.</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><span class="m-label">SERIES</span><span class="m-value">Claude Certification</span></div>
+      <div class="cover-meta-item"><span class="m-label">TOPIC</span><span class="m-value">Claude Code Config</span></div>
+      <div class="cover-meta-item"><span class="m-label">DURATION</span><span class="m-value">15–20 min</span></div>
+    </div>
+  </div>
+  <div class="cover-graphic"></div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 2: AGENDA -->
+<div class="slide agenda-slide">
+  <div class="s-header"><div class="eyebrow visible">DOMAIN 3</div><h2>AGENDA</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body">
+    <div class="agenda-grid">
+      <div class="agenda-card">
+        <span class="part-label">PART 1</span>
+        <h3>SKILLS VS COMMANDS</h3>
+        <span class="part-time">~5 min</span>
+        <ul><li>What each mechanism is</li><li>Key structural differences</li><li>When to use which</li></ul>
+      </div>
+      <div class="agenda-card">
+        <span class="part-label">PART 2</span>
+        <h3>BEST PRACTICES</h3>
+        <span class="part-time">~8 min</span>
+        <ul><li>Command authoring rules</li><li>Skill resources pattern</li><li>Context window management</li><li>Compact &amp; manifest strategies</li></ul>
+      </div>
+      <div class="agenda-card">
+        <span class="part-label">PART 3</span>
+        <h3>LIVE DEMO</h3>
+        <span class="part-time">~5 min</span>
+        <ul><li>Invoking a skill</li><li>Running a slash command</li><li>Watching context grow &amp; compact</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 3: DIVIDER — PART 1 -->
+<div class="slide divider">
+  <div class="divider-inner">
+    <span class="divider-eyebrow">PART 1</span>
+    <h2>SKILLS<br>VS COMMANDS</h2>
+    <p class="div-sub">Two different extension points — same invocation syntax, very different scope and lifecycle.</p>
+  </div>
+  <div class="divider-grid"></div>
+  <div class="divider-bg-num">01</div>
+</div>
+
+<!-- SLIDE 4: WHAT IS A SLASH COMMAND -->
+<div class="slide">
+  <div class="s-header"><div class="eyebrow visible">COMMANDS</div><h2>SLASH COMMANDS</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body" style="justify-content:flex-start">
+    <div class="two-col" style="height:auto">
+      <div class="col-block left">
+        <h3>WHAT IT IS</h3>
+        <ul>
+          <li>A single <code>.md</code> file dropped in <code>.claude/commands/</code></li>
+          <li>Invoked with <code>/filename</code> (no extension) in any session</li>
+          <li>The file content becomes the prompt — nothing more</li>
+          <li>Supports <code>$ARGUMENTS</code> for inline parameterization</li>
+          <li>Can reference external files with <code>@path/to/file</code></li>
+        </ul>
+      </div>
+      <div class="col-block right">
+        <h3>BEST FOR</h3>
+        <ul>
+          <li>Repeatable one-shot tasks: code review, PR description, write unit tests</li>
+          <li>Team workflows: generate a sprint summary, draft a status update, scaffold a new component</li>
+          <li>Short, focused tasks with a clear deliverable</li>
+          <li>Prompts that should be version-controlled alongside the code</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 5: WHAT IS A SKILL -->
+<div class="slide">
+  <div class="s-header"><div class="eyebrow visible">SKILLS</div><h2>SKILLS</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body" style="justify-content:flex-start">
+    <div class="two-col" style="height:auto">
+      <div class="col-block left" style="gap:10px">
+        <h3>STRUCTURE</h3>
+        <div class="code-block" style="flex:1">
+          <pre><span class="c"># YAML frontmatter required</span>
+<span class="c">---</span>
+<span class="n">name</span><span class="k">:</span> <span class="s">my-skill</span>
+<span class="n">description</span><span class="k">:</span> <span class="s">What this skill does</span>
+<span class="c">---</span>
+
+<span class="c"># Directory layout</span>
+.claude/skills/my-skill/
+├── <span class="fn">SKILL.md</span>       <span class="c"># orchestrator</span>
+└── resources/
+    ├── <span class="s">topic-a.md</span>
+    └── <span class="s">topic-b.md</span></pre>
+        </div>
+      </div>
+      <div class="col-block right">
+        <h3>BEST FOR</h3>
+        <ul>
+          <li>Multi-step sessions: code audits, project onboarding, system design reviews</li>
+          <li>Tasks that need extra reference files loaded at runtime — e.g., project context, coding standards, client requirements</li>
+          <li>Reusable workflows shared across teams: bug triage, tech debt analysis, migration planning</li>
+          <li>Any flow that needs its own orchestration logic beyond a single prompt</li>
+          <li>Invoked with <code style="font-family:var(--font-mono);font-size:0.85em;background:rgba(7,80,86,0.08);color:var(--navy);padding:2px 6px;border-radius:3px">/skill-name</code> — Claude loads SKILL.md and follows its instructions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 6: SIDE-BY-SIDE COMPARISON -->
+<div class="slide">
+  <div class="s-header"><div class="eyebrow visible">COMPARISON</div><h2>SKILLS VS COMMANDS AT A GLANCE</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body">
+    <table class="data-table">
+      <thead><tr><th>DIMENSION</th><th>SLASH COMMAND</th><th>SKILL</th></tr></thead>
+      <tbody>
+        <tr><td>Storage</td><td><code>.claude/commands/name.md</code></td><td><code>.claude/skills/name/SKILL.md</code></td></tr>
+        <tr><td>Invocation</td><td><code>/name $ARGUMENTS</code></td><td><code>/name</code></td></tr>
+        <tr><td>Structure</td><td>Single markdown file</td><td>Directory with orchestrator + resources</td></tr>
+        <tr><td>Resources</td><td>Inline or <code>@file</code> references</td><td><code>resources/</code> subfolder loaded on demand</td></tr>
+        <tr><td>Frontmatter</td><td>None required</td><td>Required: <code>name</code> + <code>description</code></td></tr>
+        <tr><td>Session state</td><td>Stateless (one prompt)</td><td>Stateful (multi-turn orchestration)</td></tr>
+        <tr><td>Typical use</td><td>Code review, PR gen, write tests, draft status update</td><td>Code audit, project onboarding, system design review, migration planning</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 7: DIVIDER — PART 2 -->
+<div class="slide divider">
+  <div class="divider-inner">
+    <span class="divider-eyebrow">PART 2</span>
+    <h2>BEST<br>PRACTICES</h2>
+    <p class="div-sub">How to write, organize, and scale commands and skills without polluting context or losing reliability.</p>
+  </div>
+  <div class="divider-grid"></div>
+  <div class="divider-bg-num">02</div>
+</div>
+
+<!-- SLIDE 8: COMMAND AUTHORING RULES -->
+<div class="slide">
+  <div class="s-header"><div class="eyebrow visible">BEST PRACTICES</div><h2>COMMAND AUTHORING RULES</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body" style="justify-content:flex-start">
+    <div class="two-col" style="height:auto">
+      <div class="col-block left">
+        <h3>STRUCTURE</h3>
+        <ul>
+          <li>One command, one job — keep each file under ~50 lines</li>
+          <li>Name files descriptively: <code>pr-description.md</code>, not <code>pr.md</code></li>
+          <li>Use <code>$ARGUMENTS</code> for any value that varies per invocation</li>
+          <li>Reference large context with <code>@FILEPATH</code> — don't inline it</li>
+          <li>Lead with intent: the first sentence tells Claude what to produce</li>
+        </ul>
+      </div>
+      <div class="col-block right">
+        <h3>GOVERNANCE</h3>
+        <ul>
+          <li>Commit command files to version control — they are team APIs</li>
+          <li>Place team-wide commands in the project repo; personal commands in <code>~/.claude/commands/</code></li>
+          <li>Project-level commands override user-level on name collision</li>
+          <li>Review commands in PR just like code — they shape model behavior</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 9: SKILL RESOURCES PATTERN -->
+<div class="slide">
+  <div class="s-header"><div class="eyebrow visible">BEST PRACTICES</div><h2>SKILL RESOURCES PATTERN</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body" style="justify-content:flex-start">
+    <div class="two-col" style="height:auto">
+      <div class="col-block left">
+        <h3>HOW IT WORKS</h3>
+        <ul>
+          <li><code>SKILL.md</code> is the router — it decides which resource to load and when</li>
+          <li>Each file in <code>resources/</code> covers one concern: one domain, one topic, one workflow stage</li>
+          <li>SKILL.md references resources with relative paths: <code>./resources/CCA_Domain1.md</code></li>
+          <li>Claude reads only the file needed for the current step — not all resources at once</li>
+        </ul>
+      </div>
+      <div class="col-block right">
+        <h3>WHY IT MATTERS</h3>
+        <ul>
+          <li>Keeps context window lean — load only what's needed, when it's needed</li>
+          <li>Each resource file can be updated independently without touching the orchestrator</li>
+          <li>Deep content (domain explanations, reference tables) lives in resources, not in the orchestrator</li>
+          <li>Verify all referenced paths exist before shipping — broken references fail silently</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 10: CONTEXT WINDOW MANAGEMENT -->
+<div class="slide">
+  <div class="s-header"><div class="eyebrow visible">BEST PRACTICES</div><h2>MANAGING THE CONTEXT WINDOW</h2></div>
+  <div class="s-rule"></div>
+  <div class="s-body">
+    <div class="note-box" style="margin-bottom:16px">
+      <p><strong>The problem:</strong> every tool call result, resource file, and exchange turn occupies context. As context grows, attention dilutes — critical instructions near the top receive less weight than they should.</p>
+    </div>
+    <div class="three-col" style="height:auto;gap:16px">
+      <div class="col-block accent" style="height:auto">
+        <h3>LOAD LAZILY</h3>
+        <ul>
+          <li>Never load all resources upfront</li>
+          <li>Route to the right file based on user intent before reading it</li>
+          <li>Use <code>@file</code> references in commands instead of inlining content</li>
+        </ul>
+      </div>
+      <div class="col-block accent" style="height:auto">
+        <h3>WRITE A MANIFEST</h3>
+        <ul>
+          <li>In SKILL.md, list available resources with one-line descriptions</li>
+          <li>Claude reads the manifest to pick the right file — not all files</li>
+          <li>Manifest stays in context; bulky resources rotate in and out</li>
+        </ul>
+      </div>
+      <div class="col-block accent" style="height:auto">
+        <h3>USE /COMPACT</h3>
+        <ul>
+          <li><code>/compact</code> summarizes the conversation history in place</li>
+          <li>Critical for long skill sessions that span many exchanges</li>
+          <li>Run it before loading a new large resource to free headroom</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="logo"><svg><use href="#perficient-logo"/></svg></div>
+</div>
+
+<!-- SLIDE 11: DIVIDER — PART 3 -->
+<div class="slide divider">
+  <div class="divider-inner">
+    <span class="divider-eyebrow">PART 3</span>
+    <h2>LIVE<br>DEMO</h2>
+    <p class="div-sub">See skills and slash commands in action — invocation, resource loading, and context management.</p>
+  </div>
+  <div class="divider-grid"></div>
+  <div class="divider-bg-num">03</div>
+</div>
+
+</div><!-- /viewport -->
+</div><!-- /deck -->
+
+<div id="progress"></div>
+<div id="counter">1 / 13</div>
+<div id="dots"></div>
+<div id="hint">&#x2190; &#x2192; &middot; Space &middot; F</div>
+
+<!-- PERFICIENT-NAV-START -->
+<script>
+/* Perficient AI Academy — Slide Navigation
+ * Keyboard · Click · Touch · Fullscreen
+ * Extracted from presentation-template.html for shared use.
+ */
+(function(){
+  const slides   = Array.from(document.querySelectorAll('.slide'));
+  const viewport = document.getElementById('viewport');
+  const prog     = document.getElementById('progress');
+  const ctr      = document.getElementById('counter');
+  const dotsEl   = document.getElementById('dots');
+  let cur        = 0;
+  const total    = slides.length;
+
+  /* Build navigation dots */
+  slides.forEach(function(_, i) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = function() { go(i); };
+    dotsEl.appendChild(d);
+  });
+
+  /* Scale viewport to fit window */
+  function scale() {
+    const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.97;
+    viewport.style.transform = 'scale(' + s + ')';
+  }
+  scale();
+  window.addEventListener('resize', scale);
+  document.addEventListener('fullscreenchange', scale);
+
+  /* Go to slide n */
+  function go(n) {
+    if (n < 0 || n >= total) return;
+    slides[cur].classList.remove('active');
+    slides[cur].classList.add('prev');
+    const old = cur;
+    setTimeout(function() { slides[old].classList.remove('prev'); }, 450);
+    cur = n;
+    slides[cur].classList.add('active');
+    prog.style.width = ((cur + 1) / total * 100) + '%';
+    ctr.textContent  = (cur + 1) + ' / ' + total;
+    document.querySelectorAll('.dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === cur);
+    });
+  }
+
+  /* Keyboard navigation */
+  document.addEventListener('keydown', function(e) {
+    if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key))          { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(total - 1);
+    if (e.key === 'f' || e.key === 'F') {
+      document.fullscreenElement
+        ? document.exitFullscreen()
+        : document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+
+  /* Click navigation */
+  viewport.addEventListener('click', function(e) {
+    e.clientX / window.innerWidth > 0.5 ? go(cur + 1) : go(cur - 1);
+  });
+
+  /* Touch / swipe navigation */
+  var tx = 0;
+  document.addEventListener('touchstart', function(e) { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) { dx < 0 ? go(cur + 1) : go(cur - 1); }
+  });
+
+  /* Init */
+  go(0);
+})();
+
+</script>
+<!-- PERFICIENT-NAV-END -->
+</body>
+</html>

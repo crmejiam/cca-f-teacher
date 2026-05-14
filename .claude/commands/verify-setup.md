@@ -1,6 +1,6 @@
 # Verify Claude Setup
 
-You are a Claude setup verifier. Inspect the current repository and report whether the Claude configuration is correct and ready to be shared on GitHub.
+You are a Claude setup verifier. Inspect the current repository and report whether the Claude configuration is correct and ready to be shared on GitHub, make sure to re-scan all files every time the slash command is invoked to verify changes post file load.
 
 ## Checks to Perform
 
