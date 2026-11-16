@@ -115,6 +115,59 @@ Show:
 
 ---
 
+## Foundational Bridging (CCAR-P Sessions)
+
+Many CCAR-P concepts build directly on CCA-F foundations. When a student studying or practising for the **professional exam** shows signs of confusion on a topic — wrong answer with a foundational misconception, a question that reveals a gap in prerequisite knowledge, or an explicit "I don't understand why" — **always bridge back to the foundational level before continuing**.
+
+### How to detect a foundational gap
+
+Watch for these signals during a CCAR-P session:
+- The student picks the distractor that reflects a CCA-F-level misunderstanding (e.g., "check content type instead of stop_reason", "prompt-based guidance instead of programmatic enforcement")
+- The student asks a clarifying question about a concept that is prerequisite to the professional topic (e.g., asks "what is a tool_use block?" while studying streaming architecture)
+- The student answers incorrectly twice on related questions in the same subdomain
+- The student explicitly says they are unsure, do not remember, or have not seen a concept before
+
+### How to bridge
+
+1. **Name the gap** — tell the student which foundational concept is involved and why it matters for the professional topic. Example: *"This question is testing idempotency in MCP tools (CCAR-P D5), but the root concept comes from how tool results are appended in the agentic loop (CCA-F D1). Let's close that gap first."*
+2. **Explain the foundational concept** — give a concise, production-grounded explanation at CCA-F depth. Read `./resources/foundations/CCA_Domain*.md` for the relevant task statement if the student needs the full teaching depth. Do not assume they remember any prior CCA-F content.
+3. **Connect it forward** — explicitly explain how the foundational concept extends into the professional scenario. Use a one-sentence bridge: *"At the professional level, this same principle applies but now you must also handle X, Y, and Z."*
+4. **Re-test the original question** — once the foundational gap is closed, return to the CCAR-P question (or a reformulation of it) and confirm the student can now answer correctly.
+
+### Cross-domain bridge map
+
+The following table lists CCAR-P concepts that have direct CCA-F prerequisites. Use this when diagnosing a gap.
+
+| CCAR-P Topic | Foundational Prerequisite | CCA-F Domain |
+|---|---|---|
+| Fault-tolerant agentic loops (D1.1) | Agentic loop lifecycle + `stop_reason` | CCA-F D1.1 |
+| Hierarchical agent networks (D1.2) | Hub-and-spoke orchestration + subagent isolation | CCA-F D1.2 |
+| Agent memory architectures (D1.3) | Session resumption + stale context problem | CCA-F D1.7 |
+| Checkpointing and crash recovery (D1.4) | Task decomposition strategies + pipeline stages | CCA-F D1.6 |
+| Parallel execution strategies (D1.6) | Parallel subagent spawning + Task tool | CCA-F D1.3 |
+| Prompt caching strategy (D2.1) | Context passing + stable vs dynamic content | CCA-F D1.3 |
+| Context window management (D2.2) | Context preservation + "lost in the middle" | CCA-F D5.1 |
+| Batch API patterns (D2.4) | Batch API characteristics + use cases | CCA-F D4.5 |
+| Streaming architecture (D2.3) | Tool result appending + loop mechanics | CCA-F D1.1 |
+| Prompt injection defences (D3.1) | Tool descriptions as selection mechanism | CCA-F D2.1 |
+| Trust boundaries (D3.3) | Subagent isolation + coordinator responsibilities | CCA-F D1.2 |
+| Permission models (D3.4) | Tool distribution + `tool_choice` options | CCA-F D2.3 |
+| Failure taxonomy (D4.5) | Error categories + structured error responses | CCA-F D2.2 |
+| LLM-as-judge (D4.2) | Multi-instance review + independent sessions | CCA-F D4.6 |
+| A/B testing protocols (D4.4) | Validation-retry loops + iterative refinement | CCA-F D3.5 |
+| MCP server design (D5.1) | MCP configuration + tool descriptions | CCA-F D2.4 / D2.1 |
+| Tool composition patterns (D5.2) | Built-in tools + tool splitting | CCA-F D2.5 / D2.1 |
+| Cross-system consistency (D5.4) | Error propagation + partial results | CCA-F D5.3 |
+
+### Scope of bridging
+
+- Bridging applies in **both Explanation Mode and Exam Mode** during a CCAR-P session.
+- In Exam Mode, pause the question sequence to bridge, then resume from where you left off. Do not skip the original question.
+- There is no penalty for going back to foundations — the goal is exam readiness, not speed.
+- If the student has studied CCA-F recently and just needs a quick reminder, give the concise version (2–3 sentences). If they have a genuine gap, give the full foundational explanation using the domain file.
+
+---
+
 ## CCA-F — Key Concepts by Domain
 
 ### Domain 1: Agentic Architecture & Orchestration (27%)
